@@ -14,6 +14,19 @@ library(dplyr)
 library(tidytext)
 library(stringr)
 library(ggplot2)
+library(wordcloud)
+
+visualizeWordcloud <- function(term, freq, title = "", min.freq = 50, max.words = 200){
+  mypal <- brewer.pal(8,"Dark2")
+  wordcloud(words = term,
+            freq = freq, 
+            colors = mypal, 
+            scale=c(8,.3),
+            rot.per=.15,
+            min.freq = min.freq, max.words = max.words,
+            random.order = F)
+}
+
 ```
 
 A fonte dos dados utilizados na análise, no caso, das obras em si e dos corpus das obras, foi o repositório do [Projeto Gutenberg](http://www.gutenberg.org/), disponibilizado pelo pacote [gutenbergr](https://cran.r-project.org/web/packages/gutenbergr/).
@@ -96,7 +109,11 @@ total_words <- books_words %>%
 total_words
 ```
 
+
 **Frequência de termos por livro**
+
+# Explorando o conjunto de títulos 1
+
 Explorar a quantidade de termos mesmo com stopwords
 
 ```{r}
@@ -108,7 +125,9 @@ head(books_words, 10)
 ```
 
 **Histograma das frequências de palavras por livro**
+
 **Sem remoção de stop-words**
+
 ```{r}
 ggplot(books_words, 
        aes(n/total, fill = title)) + 
@@ -118,8 +137,15 @@ ggplot(books_words,
 ```
 
 **Remover Stop-Words**
+
 **Frequência maior ou igual a 500 para todos os títulos**
+
 **Análise Global**
+
+# Explorando o conjunto de títulos 2
+
+Explorar a quantidade de termos sem stopwords
+
 ```{r}
 data("stop_words")
 
@@ -138,6 +164,7 @@ tidy_books %>%
          coord_flip()
 ```
 
+# Explorando a frequência absoluta e frequência relativa de palavras título-a-título 1
 
 ```{r}
 data("stop_words")
@@ -171,17 +198,24 @@ ggplot(words_books_bb, aes(n/total, fill = title)) +
   facet_wrap(~title, ncol = 2, scales = "free_y")
 ```
 
+# Explorando a frequência absoluta e frequência relativa de palavras título-a-título 2
 
 ```{r}
-#frequência relativa de palavras num único livro
 book_filter1 <- words_books_bb %>% 
   filter(title=="The Prince")
+visualizeWordcloud(term = book_filter1$word, freq = book_filter1$n)
+
 book_filter2 <- words_books_bb %>% 
   filter(title=="Leviathan")
+visualizeWordcloud(term = book_filter2$word, freq = book_filter2$n)
+
 book_filter3 <- words_books_bb %>% 
   filter(title=="Second Treatise of Government")
+visualizeWordcloud(term = book_filter3$word, freq = book_filter3$n)
+
 book_filter4 <- words_books_bb %>% 
   filter(title=="The Social Contract & Discourses")
+visualizeWordcloud(term = book_filter4$word, freq = book_filter4$n)
 
 #frequência relativa de palavras do livro 1 "The Prince"
 ggplot(book_filter1, aes(n/total)) + 
