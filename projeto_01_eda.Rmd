@@ -8,6 +8,8 @@ Este *working paper* é uma análise das principais obras do pensamento polític
 
 Para tal, foram utilizadas 04 das obras mais representativas destes autores.
 
+## Pacotes
+
 ```{r}
 library(gutenbergr)
 library(dplyr)
@@ -15,18 +17,22 @@ library(tidytext)
 library(stringr)
 library(ggplot2)
 library(wordcloud)
+```
 
-visualizeWordcloud <- function(term, freq, title = "", min.freq = 50, max.words = 200){
-  mypal <- brewer.pal(8,"Dark2")
-  wordcloud(words = term,
+## Funções
+
+```{r}
+visualizeWordcloud <- function(term, freq, title = "", min.freq = 50, max.words = 100){
+  mypal <- brewer.pal(8, "Dark2")
+  wordcloud(words = term, 
             freq = freq, 
             colors = mypal, 
-            scale=c(8,.3),
-            rot.per=.15,
-            min.freq = min.freq, max.words = max.words,
+            scale = c(8, .3), 
+            rot.per = .15, 
+            min.freq = min.freq, 
+            max.words = max.words, 
             random.order = F)
 }
-
 ```
 
 A fonte dos dados utilizados na análise, no caso, das obras em si e dos corpus das obras, foi o repositório do [Projeto Gutenberg](http://www.gutenberg.org/), disponibilizado pelo pacote [gutenbergr](https://cran.r-project.org/web/packages/gutenbergr/).
