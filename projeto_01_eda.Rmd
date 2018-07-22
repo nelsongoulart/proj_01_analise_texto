@@ -22,7 +22,7 @@ library(wordcloud)
 ## Funções
 
 ```{r}
-visualizeWordcloud <- function(term, freq, title = "", min.freq = 50, max.words = 100){
+visualizeWordcloud <- function(term, freq, title = "", min.freq = 25, max.words = 100){
   mypal <- brewer.pal(8, "Dark2")
   wordcloud(words = term, 
             freq = freq, 
@@ -127,7 +127,6 @@ books_words <- left_join(books_words,
                          total_words)
 
 head(books_words, 10)
-
 ```
 
 **Histograma das frequências de palavras por livro**
@@ -148,7 +147,7 @@ ggplot(books_words,
 
 **Análise Global**
 
-# Explorando o conjunto de títulos 2
+# Explorando o Conjunto de Títulos 2
 
 Explorar a quantidade de termos sem stopwords
 
@@ -170,9 +169,9 @@ tidy_books %>%
          coord_flip()
 ```
 
-# Explorando a frequência absoluta e frequência relativa de palavras título-a-título 1
+# Explorando a Frequência Absoluta e a Frequência Relativa de Termos Título-a-Título 1
 
-```{r}
+```{r Explorando a Frequência Absoluta e a Frequência Relativa de Termos Título-a-Título 1}
 data("stop_words")
 
 tidy_books <- books %>% 
@@ -204,9 +203,9 @@ ggplot(words_books_bb, aes(n/total, fill = title)) +
   facet_wrap(~title, ncol = 2, scales = "free_y")
 ```
 
-# Explorando a frequência absoluta e frequência relativa de palavras título-a-título 2
+# Explorando a Frequência Absoluta e a Frequência Relativa de Termos Título-a-Título 2
 
-```{r}
+```{r Frequência absoluta e frequência relativa de palavras título-a-título 2}
 book_filter1 <- words_books_bb %>% 
   filter(title=="The Prince")
 visualizeWordcloud(term = book_filter1$word, freq = book_filter1$n)
