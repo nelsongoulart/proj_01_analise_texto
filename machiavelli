@@ -1,0 +1,89 @@
+library(gutenbergr)
+library(stringr)
+machiavelli <- gutenberg_works(str_detect(author, "Machiavelli"))
+hobbes <- gutenberg_works(str_detect(author, "Hobbes"))
+locke <- gutenberg_works(str_detect(author, "Locke"))
+rousseau <- gutenberg_works(str_detect(author, "Rousseau"))
+books <- gutenberg_download(c(1232, 
+                              3207, 
+                              7370, 
+                              46333), meta_fields = c("title", "author"))
+table(books$title)
+library(tidytext)
+#unnest_tokens está no pacote tidy text
+machiavelli %>%
+  unnest_tokens(word, text)
+visualizeWordcloud <- function(term, freq, title = "", min.freq = 50, max.words = 200){
+  mypal <- brewer.pal(8,"Dark2")
+  wordcloud(words = term,
+            freq = freq, 
+            colors = mypal, 
+            scale=c(8,.3),
+            rot.per=.15,
+            min.freq = min.freq, max.words = max.words,
+            random.order = F)
+  
+  df <- data.frame(text = document)
+  df
+  #separando por palavras
+  document_lines <- unnest_tokens(df, input = text, output = line, token = "sentences", to_lower = F)
+  document_lines$lineNo <- seq_along(document_lines$line)
+  head(document_lines)
+  
+  #separando por bigramas
+  df_text_to_word_tidy <- document_lines %>% 
+    unnest_tokens(output = word, input = line, token = "words")
+  
+  head(df_text_to_word_tidy)
+  
+  #separando por trigramas
+  df_text_to_trigrams_tidy <- document_lines %>% 
+    unnest_tokens(output = trigram, input = line, token = "ngrams", n = 3)
+  head(df_text_to_trigrams_tidy)
+  
+  head(stop_words)
+  
+  df_tmp <- df_text_to_word_tidy %>%
+    anti_join(stop_words, by = c("word" = "word"))
+  head(df_tmp)
+  #count conta observações no tibble
+  df_tmp %>%
+    count(word, sort = TRUE)
+  
+  library(gutembergr)
+  library(tidytext)
+  library(dplyr)
+  library(stringr)
+  library(ggplot2)
+  library(wordcloud)
+  gutenberg_works(str_detect(author, "Machiavelli"))
+  
+  books <- machiavelli() %>%
+    group_by(book) %>%
+    mutate(line = row_number(),
+           chapter = cumsum(str_detect(text, regex("^chapter [\\divxlc]",
+                                                   ignore_case = TRUE)))) %>%
+    ungroup()
+  books
+  tidy_books <- books %>%
+    unnest_tokens(input = text, output = word, token = "words")
+  head(tidy_books)
+  
+  tidy_books <- tidy_books %>%
+    anti_join(y = stop_words, by = c("word" = "word"))
+  
+  word_frequencies <- tidy_books %>%
+    count(word, sort = TRUE)
+  
+  head(word_frequencies)
+  
+  word_frequencies %>%
+    filter(n > 400) %>%
+    mutate(word = reorder(word, n)) %>%
+    ggplot(mapping = aes(x = word, y = n)) +
+    geom_col() +
+    coord_flip()
+  
+  visualizeWordcloud(term = word_frequencies$word, freq = word_frequencies$n)
+  
+  
